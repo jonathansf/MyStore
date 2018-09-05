@@ -1,15 +1,13 @@
+# 1. Acessar o site: www.automationpractice.com.
 Dado("que eu acesse o site") do
-  # Esta com a "/" pois referencia o app_host do env.rb
   visit '/'
-end
-
-Entao("o logo e apresentado") do
   expect(page).to have_css("#header_logo")
   puts 'Acessou o site!!!'
 end
 
-
-Entao("seleciono o produto desejado") do
+# 2. Escolha um produto qualquer na loja.
+# 3. Adicione o produto escolhido ao carrinho.
+Quando("seleciono o produto desejado") do
   expect(@Page).to have_content("Blouse")
   @Page.form.blouse.click
   expect(@Page).to have_css("#add_to_cart")
@@ -18,30 +16,25 @@ Entao("seleciono o produto desejado") do
   puts 'Selecionou o produto desejado'
 end
 
-Entao("avanco para o checkout") do
+# 4. Prossiga para o checkout.
+E("avanco para o checkout") do
   expect(@Page.formAddSucess.checkout).to have_content("Proceed to checkout")
   @Page.formAddSucess.checkout.click
   puts 'Foi para checkout'
 end
 
-E("que eu esteja no checkout") do
-    expect(@Page.formCart.cartTitle).to have_content("SHOPPING-CART SUMMARY")
-    puts 'Esta na pagina do checkout'
-end
 
-E("valido o produto adicionado") do
+# 5. Valide se o produto foi corretamente adicionado ao carrinho e prossiga caso esteja tudo certo.
+E("valido o produto adicionado no checkout") do
+    expect(@Page.formCart.cartTitle).to have_content("SHOPPING-CART SUMMARY")
     expect(@Page.formCart.products).to have_content("Blouse")
     @price = @Page.formCart.price.text
-    puts @price
-    puts 'O produto correto esta no carrinho'
-end
-
-E("prossigo com a compra") do
     expect(@Page.formCart.continueShopping).to have_content("Proceed to checkout")
     @Page.formCart.continueShopping.click
-    puts 'Clicou no continuar com a compra'
+    puts 'O produto correto esta no carrinho, continuar com a compra'
 end
 
+# 6. Realize o cadastro do cliente preenchendo todos os campos obrigatórios dos formulários.
 E("cadastro o usuario") do
     expect(@Page.formCreateUser).to have_content("CREATE AN ACCOUNT")
     @Page.formCreateUser.email.set(@email)
@@ -49,6 +42,7 @@ E("cadastro o usuario") do
     puts 'Inputou o email do usuario'
 end
 
+# 6. Realize o cadastro do cliente preenchendo todos os campos obrigatórios dos formulários.
 E("preencho os dados do usuario") do
     expect(@Page.formUserDate).to have_content("YOUR PERSONAL INFORMATION")
     @Page.formUserDate.genderMasc.click
@@ -62,7 +56,7 @@ E("preencho os dados do usuario") do
     puts 'preencheu as informacoes do usuario'
 end
 
-
+# 6. Realize o cadastro do cliente preenchendo todos os campos obrigatórios dos formulários.
 E("preencho os endereco do usuario") do
     expect(@Page.formAdressData).to have_content("YOUR ADDRESS")
     @Page.formAdressData.firstName.set(@firstName)
@@ -79,13 +73,14 @@ E("preencho os endereco do usuario") do
     puts 'preencheu as informacoes do endereco'
 end
 
+# 7. Valide se o endereço está correto e prossiga.
 E("valido o endereco") do
     expect(@Page.formValidAdress).to have_content(@adress)
     @Page.formValidAdress.buttonValidAdress.click
     puts 'Validou o endereço'
 end
 
-
+# 8. Aceite os termos de serviço e prossiga.
 E("aceito os termos de servico") do
     expect(@Page.formTermsOfService).to have_content("Terms of service")
     @Page.formTermsOfService.termOfService.click
@@ -93,14 +88,16 @@ E("aceito os termos de servico") do
     puts 'Aceitou termos de servicos'
 end
 
-E("valido o preco") do
+# 9. Valide o valor total da compra.
+E("valido o valor total da compra") do
     expect(@Page.formPayment).to have_content("PLEASE CHOOSE YOUR PAYMENT METHOD")
     @totalPrice = @Page.formPayment.totalPrice.text
     expect(@Page.formPayment.totalPrice).to have_content(@price)
     puts 'validou o preço'
 end
 
-E("escolho a forma de pagemento") do
+# 10. Selecione um método de pagamento e prossiga.
+E("escolho a forma de pagamento") do
     expect(@Page.formPayment.bankwire).to have_content("Pay by bank wire")
     @Page.formPayment.bankwire.click
     expect(@Page.formPayment).to have_content("BANK-WIRE PAYMENT.")
@@ -108,32 +105,11 @@ E("escolho a forma de pagemento") do
     puts 'pagamento realizado'
 end
 
+# 11. Confirme a compra e valide se foi finalizada com sucesso.
 Entao("a compra e realizada com sucesso") do
   expect(@Page.formOrderConfirmation).to have_content("Your order on My Store is complete.")
-  puts 'Validou pedido realizado'
   @priceOrderConfirmation = @Page.formOrderConfirmation.priceOrderConfirmation.text
   expect(@Page.formOrderConfirmation.priceOrderConfirmation).to have_content(@price)
   expect(@Page.formOrderConfirmation.priceOrderConfirmation).to have_content(@totalPrice)
   puts 'Validou o preço identico ao carrinho e da tela de pagamento'
-end
-
-
-
-
-
-
-
-
-
-E("preencho as informacoes cadastrais") do
-  @Page.form.nome.set(@nome)
-  @Page.form.email.set(@email)
-  @Page.form.telefone.set(@telefone)
-  @Page.form.celular.set(@celular)
-  @Page.form.cidade.set(@cidade)
-  @Page.form.estado.set(@estado)
-  @Page.form.mensagem.set(@mensagem)
-  puts 'Os campos foram preenchidos com sucesso!!!'
-  puts 'Não foi enviado o formulario para não sujar a base de dados!!!'
-  sleep 30
 end

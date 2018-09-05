@@ -4,7 +4,7 @@ Before '@MyStore' do
 end
 
 # Criando a massa de dados, para ser usado nos steps
-Before '@Dados' do
+Before '@Data' do
    @firstName = Faker::Name.first_name
    @lastName = Faker::Name.last_name
    @email = Faker::Internet.email
@@ -21,7 +21,4 @@ Before '@Dados' do
    @adtInformation = Faker::Address.community
    @phone_mobile = Faker::PhoneNumber.cell_phone
    @adressName = 'My Adrress'
-
-
-
 end
